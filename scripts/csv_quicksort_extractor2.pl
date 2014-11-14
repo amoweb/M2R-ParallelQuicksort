@@ -2,13 +2,18 @@
 use strict;
 
 my($line);
+my($threads);
 my($size);
 my($seq,$par,$libc);
-print "Size, Seq, Par, Libc\n" ;
+print "Size, Threads, Seq, Par, Libc\n" ;
 while($line=<>) {
     chomp $line;
     if($line =~/^Size: ([\d\.]*)$/) {
         $size = $1;
+        next;
+    } 
+    if($line =~/^Threads: ([\d\.]*)$/) {
+        $threads = $1;
         next;
     } 
     if($line =~/^Sequential quicksort.*: ([\d\.]*) sec.$/) {
@@ -19,7 +24,7 @@ while($line=<>) {
     } 
     if($line =~/^Built-in quicksort.*: ([\d\.]*) sec.$/) {
         $libc=$1; 
-        print "$size, $seq, $par, $libc\n";
+        print "$size, $threads, $seq, $par, $libc\n";
         next;
     }
 }

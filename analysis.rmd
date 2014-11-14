@@ -9,29 +9,37 @@ This software is composed of three algorithms:
 
 We mesure several executions of each algorithm. We load the result in a matrix.
 
+```{r echo=FALSE, message=FALSE}
+library(ggplot2)
+library(plyr)
+```
+
 ```{r }
-df <- read.csv("data/sama_2014-10-13/measurements_03:47.csv",header=T)
-dfw <- read.csv("data/sama_2014-10-13/measurements_03:47_wide.csv",header=T)
+firstdf <- read.csv("data/sama_2014-10-13/measurements_03:47.csv",header=T)
+dfw <- read.csv("data/amoweb_2014-11-09/measurements_22:43_wide.csv",header=T)
+
 ```
 
 The first plot shows, for each size, the execution time of each solution.
 
 ```{r}
-plot(df$Size,df$Time,col=c("red","blue","green")[df$Type],type="p")
+plot(firstdf$Size,firstdf$Time,col=c("red","blue","green")[firstdf$Type],type="p")
 
-```
-
-This plot is not easily readable. We would display the relative acceleration to the the LibC implementation. To do this, we can't work on several values for each size, we need to compute the average time of every method for each size.
-
-```{r}
-dfw_rel = dfw
-dfw_rel$Seq = dfw$Seq / dfw$Libc
-dfw_rel$Par = dfw$Par / dfw$Libc
-dfw_rel$Libc = dfw$Libc / dfw$Libc
 ```
 
 ```{r}
-plot(dfw_rel$Size, dfw_rel$Par, col="red",type="p")
-plot(dfw_rel$Size, dfw_rel$Seq, col="blue",type="p")
+names(dfw)
+plot(dfw[names(dfw) %in% c("Par", "Threads","Size")])
+
 ```
 
+```{r}
+ggplot(data = dfw, aes(x=Threads, y=Par)) + scale_y_continuous(trans="log2") +
+geom_point() + facet_wrap(~Size);
+```
+
+
+```{r}
+ggplot(data = dfw, aes(x=Threads, y=Par)) +
+geom_point() + facet_wrap(~Size);
+```

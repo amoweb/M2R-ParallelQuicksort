@@ -58,9 +58,15 @@ int main(int argc, char *argv[])
   srand(time(NULL));            //seed random
 
   int NUM = DNUM;
-  if (argc == 2)                //user specified list size.
+  if (argc > 1)                //user specified list size.
   {
     NUM = atoi(argv[1]);
+  }
+
+  int nbThreads = THREAD_LEVEL;
+  if(argc == 3)
+  {
+    nbThreads = atoi(argv[2]);
   }
   //Want to compare sorting on the same list,
   //so backup.
@@ -97,7 +103,7 @@ int main(int argc, char *argv[])
   memcpy(lyst, lystbck, NUM * sizeof(double));
 
   gettimeofday(&start, NULL);
-  parallelQuicksort(lyst, NUM, THREAD_LEVEL);
+  parallelQuicksort(lyst, NUM, nbThreads);
   gettimeofday(&end, NULL);
 
   if (!isSorted(lyst, NUM)) {

@@ -7,6 +7,10 @@ my($size);
 print "Size, Type, Time\n" ;
 while($line=<>) {
     chomp $line;
+    if($line =~/^Threads: ([\d\.]*)$/) {
+        $size = $1;
+        next;
+    }
     if($line =~/^Size: ([\d\.]*)$/) {
         $size = $1;
         next;

@@ -16,8 +16,9 @@ library(plyr)
 
 ```{r }
 firstdf <- read.csv("data/sama_2014-10-13/measurements_03:47.csv",header=T)
-dfw <- read.csv("data/amoweb_2014-11-09/measurements_22:43_wide.csv",header=T)
-
+dfw <- read.csv("data/amoweb_2014-11-14/measurements_20:58_wide.txt",header=T)
+dfwHigh <- dfw[dfw$Size>1000000,]
+dfwHigh4 <- dfwHigh[dfwHigh$Threads<5,]
 ```
 
 The first plot shows, for each size, the execution time of each solution.
@@ -43,3 +44,11 @@ geom_point() + facet_wrap(~Size);
 ggplot(data = dfw, aes(x=Threads, y=Par)) +
 geom_point() + facet_wrap(~Size);
 ```
+
+
+```{r}
+ggplot(data = dfwHigh4, aes(x=Threads, y=Par)) +
+geom_point() + facet_wrap(~Size);
+```
+
+A lot of perturbation ?

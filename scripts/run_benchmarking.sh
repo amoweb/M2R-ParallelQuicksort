@@ -13,7 +13,7 @@ for i in 100000000; do
             echo "$j - $rep";
                 echo "Size: $i" >> $OUTPUT_FILE;
                 echo "Threads: $j" >> $OUTPUT_FILE;
-                ./src/parallelQuicksort $i $j >> $OUTPUT_FILE;
+                ./src/parallelQuicksort $i $j $rep >> $OUTPUT_FILE;
             done ;
     done ;
 done

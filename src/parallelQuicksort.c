@@ -64,10 +64,17 @@ int main(int argc, char *argv[])
   }
 
   int nbThreads = THREAD_LEVEL;
-  if(argc == 3)
+  if(argc > 2)
   {
     nbThreads = atoi(argv[2]);
   }
+
+  int method = 0;
+  if(argc > 3)
+  {
+      method = atoi(argv[3]) % 3; 
+  }
+
   //Want to compare sorting on the same list,
   //so backup.
   double *lystbck = (double *) malloc(NUM * sizeof(double));
@@ -78,57 +85,58 @@ int main(int argc, char *argv[])
     lystbck[i] = 1.0 * rand() / RAND_MAX;
   }
 
-  //copy list.
-  memcpy(lyst, lystbck, NUM * sizeof(double));
+  for(int i=0; i<3; i++) {
+      if(method==0) {
+          //copy list.
+          memcpy(lyst, lystbck, NUM * sizeof(double));
 
+          //Sequential mergesort, and timing.
+          gettimeofday(&start, NULL);
+          quicksort(lyst, NUM);
+          gettimeofday(&end, NULL);
 
-  //Sequential mergesort, and timing.
-  gettimeofday(&start, NULL);
-  quicksort(lyst, NUM);
-  gettimeofday(&end, NULL);
+          if (!isSorted(lyst, NUM)) {
+              printf("Oops, lyst did not get sorted by quicksort.\n");
+          }
+          //Compute time difference.
+          diff = ((end.tv_sec * 1000000 + end.tv_usec)
+                  - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000.0;
+          printf("Sequential quicksort took: %lf sec.\n", diff);
+      } else if(method==1) {
 
-  if (!isSorted(lyst, NUM)) {
-    printf("Oops, lyst did not get sorted by quicksort.\n");
+          //Now, parallel quicksort.
+
+          //copy list.
+          memcpy(lyst, lystbck, NUM * sizeof(double));
+
+          gettimeofday(&start, NULL);
+          parallelQuicksort(lyst, NUM, nbThreads);
+          gettimeofday(&end, NULL);
+
+          if (!isSorted(lyst, NUM)) {
+              printf("Oops, lyst did not get sorted by parallelQuicksort.\n");
+          }
+          //Compute time difference.
+          diff = ((end.tv_sec * 1000000 + end.tv_usec)
+                  - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000.0;
+          printf("Parallel quicksort took: %lf sec.\n", diff);
+      } else {
+          //Finally, built-in for reference:
+          memcpy(lyst, lystbck, NUM * sizeof(double));
+          gettimeofday(&start, NULL);
+          qsort(lyst, NUM, sizeof(double), compare_doubles);
+          gettimeofday(&end, NULL);
+
+          if (!isSorted(lyst, NUM)) {
+              printf("Oops, lyst did not get sorted by qsort.\n");
+          }
+          //Compute time difference.
+          diff = ((end.tv_sec * 1000000 + end.tv_usec)
+                  - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000.0;
+          printf("Built-in quicksort took: %lf sec.\n", diff);
+      }
+      method = (method+1)%3;
   }
-  //Compute time difference.
-  diff = ((end.tv_sec * 1000000 + end.tv_usec)
-          - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000.0;
-  printf("Sequential quicksort took: %lf sec.\n", diff);
-
-
-
-  //Now, parallel quicksort.
-
-  //copy list.
-  memcpy(lyst, lystbck, NUM * sizeof(double));
-
-  gettimeofday(&start, NULL);
-  parallelQuicksort(lyst, NUM, nbThreads);
-  gettimeofday(&end, NULL);
-
-  if (!isSorted(lyst, NUM)) {
-    printf("Oops, lyst did not get sorted by parallelQuicksort.\n");
-  }
-  //Compute time difference.
-  diff = ((end.tv_sec * 1000000 + end.tv_usec)
-          - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000.0;
-  printf("Parallel quicksort took: %lf sec.\n", diff);
-
-
-
-  //Finally, built-in for reference:
-  memcpy(lyst, lystbck, NUM * sizeof(double));
-  gettimeofday(&start, NULL);
-  qsort(lyst, NUM, sizeof(double), compare_doubles);
-  gettimeofday(&end, NULL);
-
-  if (!isSorted(lyst, NUM)) {
-    printf("Oops, lyst did not get sorted by qsort.\n");
-  }
-  //Compute time difference.
-  diff = ((end.tv_sec * 1000000 + end.tv_usec)
-          - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000.0;
-  printf("Built-in quicksort took: %lf sec.\n", diff);
 
   free(lyst);
   free(lystbck);

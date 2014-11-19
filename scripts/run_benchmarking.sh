@@ -9,7 +9,7 @@ for i in 100000000; do
         echo "Size: $i";
         for j in 0 1 2 3 4; do
         #for j in 0 1 2 3 4 5 6 7 8; do
-            max="$((5+$j))"
+            max="$((3+2*$j))"
             for rep in `seq 1 $max`; do
             echo "$j - $rep / $max";
                 echo "Size: $i" >> $OUTPUT_FILE;

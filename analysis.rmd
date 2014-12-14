@@ -12,8 +12,7 @@ This software is composed of three algorithms:
 * The libc sequential sort algorithm
 * The parallel version
 
-
-```{r echo=FALSE, message=FALSE}
+```{r echo=TRUE, message=FALSE}
 dfw <- read.csv("data/amoweb_2014-11-14/measurements_20:58_wide.txt",header=T)
 dfw4 <- dfw[dfw$Threads<4,]
 dfwHigh <- dfw[dfw$Size>1000000,]
@@ -22,6 +21,8 @@ dfwBig <- read.csv("data/amoweb_2014-11-16/measurements_20:19_wide.txt",header=T
 dfwBig4 <- dfwBig[dfwBig$Threads<4,]
 ```
 
+The test is done on a Intel(R) Core(TM) i7-3632QM CPU @ 2.20GHz (quad-core hyperthreaded).
+ 
 We execute several time the program computing with each of the tree versions. Each execution have several dimensions:
 
 * The number of Thread (from 0 for no parallelism, to 3 for quad-thread execution).
@@ -56,3 +57,25 @@ Now, we display, for a size of 10e8, the duration for each number of thread. We 
 ```{r}
 ggplot(data = dfwBig4, aes(x=factor(Threads), y=Par)) + geom_boxplot();
 ```
+
+
+## Micro-analysis
+
+We use GNU Prof to evaluate the time performance of each part of the parallel version of the quick sort.
+
+We can see that most of the time is spent in the partition and swap functions. It seems to be coherent since these parts are fully sequential.
+
+%   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 55.97      3.35     3.35  4474951     0.00     0.00  partition
+ 40.93      5.80     2.45 109078628     0.00     0.00  swap
+  1.34      5.88     0.08        6    13.34   980.80  quicksortHelper
+  1.17      5.95     0.07                             main
+  0.67      5.99     0.04        1    40.03    40.03  isSorted
+  0.00      5.99     0.00        1     0.00     0.00  parallelQuicksort
+
+A costly part of partition is the call to rand.
+
+## Conclusion
+
+We could improve the performance of this parallel quicksort mostly by improving the partition and swap functions. For instance, we could make it parallel or use vectorization instructions as SIMD (AVX on Intel).

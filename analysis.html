@@ -190,6 +190,16 @@ hljs.initHighlightingOnLoad();
 <li>The parallel version</li>
 </ul>
 
+<pre><code class="r">dfw &lt;- read.csv(&quot;data/amoweb_2014-11-14/measurements_20:58_wide.txt&quot;,header=T)
+dfw4 &lt;- dfw[dfw$Threads&lt;4,]
+dfwHigh &lt;- dfw[dfw$Size&gt;1000000,]
+dfwHigh4 &lt;- dfwHigh[dfwHigh$Threads&lt;4,]
+dfwBig &lt;- read.csv(&quot;data/amoweb_2014-11-16/measurements_20:19_wide.txt&quot;,header=T)
+dfwBig4 &lt;- dfwBig[dfwBig$Threads&lt;4,]
+</code></pre>
+
+<p>The test is done on a Intel&reg; Core&trade; i7-3632QM CPU @ 2.20GHz (quad-core hyperthreaded).</p>
+
 <p>We execute several time the program computing with each of the tree versions. Each execution have several dimensions:</p>
 
 <ul>
@@ -222,6 +232,27 @@ geom_boxplot() + facet_wrap(~Size);
 </code></pre>
 
 <p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-6"/> </p>
+
+<h2>Micro-analysis</h2>
+
+<p>We use GNU Prof to evaluate the time performance of each part of the parallel version of the quick sort.</p>
+
+<p>We can see that most of the time is spent in the partition and swap functions. It seems to be coherent since these parts are fully sequential.</p>
+
+<p>%   cumulative   self              self     total<br/>
+ time   seconds   seconds    calls  ms/call  ms/call  name<br/>
+ 55.97      3.35     3.35  4474951     0.00     0.00  partition
+ 40.93      5.80     2.45 109078628     0.00     0.00  swap
+  1.34      5.88     0.08        6    13.34   980.80  quicksortHelper
+  1.17      5.95     0.07                             main
+  0.67      5.99     0.04        1    40.03    40.03  isSorted
+  0.00      5.99     0.00        1     0.00     0.00  parallelQuicksort</p>
+
+<p>A costly part of partition is the call to rand.</p>
+
+<h2>Conclusion</h2>
+
+<p>We could improve the performance of this parallel quicksort mostly by improving the partition and swap functions. For instance, we could make it parallel or use vectorization instructions as SIMD (AVX on Intel).</p>
 
 </body>
 
